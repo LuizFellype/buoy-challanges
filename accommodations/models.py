@@ -12,4 +12,20 @@ class Accommodation(models.Model):
         db_table = 'accommodation'
 
     def __str__(self):
-        return self.name 
+        return self.name
+
+
+class Hotel(Accommodation):
+    """Hotel model inheriting Accommodation"""
+    number_of_rooms = models.PositiveIntegerField()
+
+    class Meta:
+        db_table = 'hotel'
+
+
+class Apartment(Accommodation):
+    """Apartment model inheriting Accommodation"""
+    floor_number = models.PositiveIntegerField()
+
+    class Meta:
+        db_table = 'apartment'

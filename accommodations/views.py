@@ -1,7 +1,7 @@
 from rest_framework import generics
 from drf_spectacular.utils import extend_schema
-from .models import Accommodation
-from .serializers import AccommodationSerializer
+from .models import Accommodation, Hotel, Apartment
+from .serializers import AccommodationSerializer, HotelSerializer, ApartmentSerializer
 
 
 class AccommodationListCreateView(generics.ListCreateAPIView):
@@ -53,4 +53,24 @@ class AccommodationDetailView(generics.RetrieveUpdateDestroyAPIView):
         tags=["Accommodations"]
     )
     def delete(self, request, *args, **kwargs):
-        return super().delete(request, *args, **kwargs) 
+        return super().delete(request, *args, **kwargs)
+
+
+class HotelListCreateView(generics.ListCreateAPIView):
+    queryset = Hotel.objects.all()
+    serializer_class = HotelSerializer
+
+
+class HotelDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Hotel.objects.all()
+    serializer_class = HotelSerializer
+
+
+class ApartmentListCreateView(generics.ListCreateAPIView):
+    queryset = Apartment.objects.all()
+    serializer_class = ApartmentSerializer
+
+
+class ApartmentDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Apartment.objects.all()
+    serializer_class = ApartmentSerializer
