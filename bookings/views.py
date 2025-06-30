@@ -1,5 +1,9 @@
 from rest_framework import generics
 from drf_spectacular.utils import extend_schema
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from accommodations.models import Accommodation
+from datetime import datetime
 from .models import Booking
 from .serializers import BookingSerializer
 
@@ -53,4 +57,18 @@ class BookingDetailView(generics.RetrieveUpdateDestroyAPIView):
         tags=["Bookings"]
     )
     def delete(self, request, *args, **kwargs):
-        return super().delete(request, *args, **kwargs) 
+        return super().delete(request, *args, **kwargs)
+
+
+class NextAvailableDateView(APIView):
+    """Retrieve the next available date for an accommodation"""
+    def get(self, request, accommodation_id, date):
+        try:
+            accommodation = Accommodation.objects.get(id=accommodation_id)
+        except Accommodation.DoesNotExist:
+            return Response({"error": "Accommodation not found"}, status=404)
+
+        next_date = Booking.get_next_available_date(
+            accommodation, datetime.strptime(date, '%Y-%m-%d').date()
+        )
+        return Response({"next_available_date": next_date})

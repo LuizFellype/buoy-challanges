@@ -1,5 +1,6 @@
 from django.db import models
 from accommodations.models import Accommodation
+from datetime import timedelta
 
 
 class Booking(models.Model):
@@ -28,3 +29,23 @@ class Booking(models.Model):
         ).exists()
         
         return overlapping_bookings
+
+    @staticmethod
+    def get_next_available_date(accommodation, date):
+        """Get the next available date for an accommodation"""
+        bookings = Booking.objects.filter(
+            accommodation=accommodation,
+            end_date__gte=date
+        ).order_by('end_date')
+        
+        if bookings.exists():
+            one_day_diff = timedelta(days=1)
+            
+            for current_booking, next_booking in zip(bookings, bookings[1:]):
+                gap_between_bookings = (current_booking.end_date - next_booking.start_date) > one_day_diff
+                if (gap_between_bookings):
+                    return current_booking.end_date + one_day_diff
+        
+            return bookings.last().end_date + one_day_diff
+        
+        return date
