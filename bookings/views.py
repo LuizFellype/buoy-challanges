@@ -62,6 +62,12 @@ class BookingDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class NextAvailableDateView(APIView):
     """Retrieve the next available date for an accommodation"""
+    
+    @extend_schema(
+        summary="Get date availability",
+        description="Get Next available date for an accommodation",
+        tags=["Bookings"]
+    )
     def get(self, request, accommodation_id, date):
         try:
             accommodation = Accommodation.objects.get(id=accommodation_id)
