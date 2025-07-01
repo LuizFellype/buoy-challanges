@@ -26,14 +26,14 @@ class AccommodationSerializer(serializers.ModelSerializer):
         return value
 
 
-class HotelSerializer(serializers.ModelSerializer):
+class HotelSerializer(AccommodationSerializer):
     class Meta:
         model = Hotel
         fields = ['id', 'name', 'description', 'price', 'location', 'number_of_rooms']
         read_only_fields = ['id']
 
 
-class ApartmentSerializer(serializers.ModelSerializer):
+class ApartmentSerializer(AccommodationSerializer):
     class Meta:
         model = Apartment
         fields = ['id', 'name', 'description', 'price', 'location', 'floor_number']
