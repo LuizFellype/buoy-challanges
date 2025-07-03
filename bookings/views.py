@@ -6,12 +6,14 @@ from accommodations.models import Accommodation
 from datetime import datetime
 from .models import Booking
 from .serializers import BookingSerializer
+from src.helpers.pagination import IDCursorPagination
 
 
 class BookingListCreateView(generics.ListCreateAPIView):
     """List all bookings or create a new booking"""
     queryset = Booking.objects.select_related('accommodation').all()
     serializer_class = BookingSerializer
+    pagination_class = IDCursorPagination
 
     @extend_schema(
         summary="List all bookings",

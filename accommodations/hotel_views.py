@@ -2,6 +2,7 @@ from rest_framework import generics
 from drf_spectacular.utils import extend_schema
 from .models import Hotel
 from .serializers import HotelSerializer
+from src.helpers.pagination import IDCursorPagination
 
 
 # Hotels
@@ -9,6 +10,8 @@ class HotelListCreateView(generics.ListCreateAPIView):
     """List all Hotels or create a new one"""
     queryset = Hotel.objects.all()
     serializer_class = HotelSerializer
+    pagination_class = IDCursorPagination
+
 
     @extend_schema(
         summary="List all Hotels",

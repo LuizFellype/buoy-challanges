@@ -2,13 +2,14 @@ from rest_framework import generics
 from drf_spectacular.utils import extend_schema
 from .models import Apartment
 from .serializers import ApartmentSerializer
-
+from src.helpers.pagination import IDCursorPagination
 
 # Apartments
 class ApartmentListCreateView(generics.ListCreateAPIView):
     """List all Apartments or create a new one"""
     queryset = Apartment.objects.all()
     serializer_class = ApartmentSerializer
+    pagination_class = IDCursorPagination
 
     @extend_schema(
         summary="List all Apartments",
