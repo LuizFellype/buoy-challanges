@@ -1,5 +1,5 @@
 from rest_framework import generics
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from accommodations.models import Accommodation
@@ -66,15 +66,41 @@ class NextAvailableDateView(APIView):
     @extend_schema(
         summary="Get date availability",
         description="Get Next available date for an accommodation",
+        parameters=[
+            OpenApiParameter(
+                name="accommodation_id",
+                description=(
+                    "ID of the accomodation to search for its abailability"
+                ),
+                type=int,
+            ),
+             OpenApiParameter(
+                name="date",
+                description=(
+                    "Starting point date - recommended format: yyyy/mm/dd"
+                ),
+                type=str,
+            )
+        ],
         tags=["Bookings"]
     )
-    def get(self, request, accommodation_id, date):
+    def get(self, request):
+        accommodation_id = request.GET.get('accommodation_id')
+        date = request.GET.get('date')
+
+        if not accommodation_id or not date:
+            return Response({'error': 'Missing accommodation_id or date query parameter'}, status=400)
+
         try:
             accommodation = Accommodation.objects.get(id=accommodation_id)
         except Accommodation.DoesNotExist:
-            return Response({"error": "Accommodation not found"}, status=404)
+            return Response({'error': 'Accommodation not found'}, status=404)
 
-        next_date = Booking.get_next_available_date(
-            accommodation, datetime.strptime(date, '%Y-%m-%d').date()
-        )
-        return Response({"next_available_date": next_date})
+        try:
+            parsed_date = datetime.strptime(date, '%Y-%m-%d').date()
+        except ValueError:
+            return Response({'error': 'Invalid date format. Use YYYY-MM-DD.'}, status=400)
+
+        next_date = Booking.get_next_available_date(accommodation, parsed_date)
+        return Response({'next_available_date': next_date})
+    
