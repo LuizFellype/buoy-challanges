@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Booking
-from accommodations.models import Accommodation
+from accommodations.models import Accommodation, Apartment
 
 
 class BookingSerializer(serializers.ModelSerializer):
@@ -36,7 +36,22 @@ class BookingSerializer(serializers.ModelSerializer):
         if start_date and end_date and end_date <= start_date:
             raise serializers.ValidationError("End date must be after start date")
         
-        return data
+        try:
+            apartment = Apartment.objects.get(id=data['accommodation_id'])
+
+            overlapping = Booking(
+                accommodation=apartment,
+                start_date=data['start_date'],
+                end_date=data['end_date']
+            ).has_overlap()
+            
+            if overlapping:
+                raise serializers.ValidationError("Overlapping bookings are not allowed for apartments.")
+        
+            return data
+        except Apartment.DoesNotExist:
+            return data
+        
 
     def create(self, validated_data):
         """Create booking with accommodation"""

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Accommodation
+from .models import Accommodation, Hotel, Apartment
 
 
 class AccommodationSerializer(serializers.ModelSerializer):
@@ -23,4 +23,18 @@ class AccommodationSerializer(serializers.ModelSerializer):
     def validate_location(self, value):
         if len(value) < 2:
             raise serializers.ValidationError("Location must be at least 2 characters")
-        return value 
+        return value
+
+
+class HotelSerializer(AccommodationSerializer):
+    class Meta:
+        model = Hotel
+        fields = ['id', 'name', 'description', 'price', 'location', 'number_of_rooms']
+        read_only_fields = ['id']
+
+
+class ApartmentSerializer(AccommodationSerializer):
+    class Meta:
+        model = Apartment
+        fields = ['id', 'name', 'description', 'price', 'location', 'floor_number']
+        read_only_fields = ['id']

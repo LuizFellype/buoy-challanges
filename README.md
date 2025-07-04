@@ -103,7 +103,6 @@ docker compose run --rm web python manage.py migrate <app_name> <migration_numbe
 ## 🚀 Current Implementation
 
 ### Available Endpoints
-
 #### Accommodations
 - `GET /accommodations/` - List all accommodations
 - `POST /accommodations/` - Create accommodation
@@ -111,14 +110,39 @@ docker compose run --rm web python manage.py migrate <app_name> <migration_numbe
 - `PUT /accommodations/{id}/` - Update accommodation
 - `DELETE /accommodations/{id}/` - Delete accommodation
 
+#### Hotels
+- `GET /accommodations/hotels/` - List all hotels
+- `POST /accommodations/hotels/` - Create hotel
+- `GET /accommodations/hotels/{id}/` - Get hotel by ID
+- `PUT /accommodations/hotels/{id}/` - Update hotel
+- `DELETE /accommodations/hotels/{id}/` - Delete hotel
+
+#### Apartments
+- `GET /accommodations/apartments/` - List all apartments
+- `POST /accommodations/apartments/` - Create apartment
+- `GET /accommodations/apartments/{id}/` - Get apartment by ID
+- `PUT /accommodations/apartments/{id}/` - Update apartment
+- `DELETE /accommodations/apartments/{id}/` - Delete apartment
+
 #### Bookings
 - `GET /bookings/` - List all bookings
 - `POST /bookings/` - Create booking
 - `GET /bookings/{id}/` - Get booking by ID
 - `PUT /bookings/{id}/` - Update booking
 - `DELETE /bookings/{id}/` - Delete booking
+- `GET /bookings/availability/?accommodation_id={id}&date={date}` - Get next available date for an accommodation (date format: YYYY-MM-DD)
 
-### Current Data Models
+### Key Features & Business Logic
+
+- **Accommodation Types**: The API supports three types: Accommodation (base), Hotel, and Apartment. Hotels and Apartments inherit from Accommodation.
+- **Overlapping Bookings**: 
+  - **Apartments**: Do **not** allow overlapping bookings for the same period.
+  - **Hotels**: Allow overlapping bookings (multiple rooms can be booked for the same dates).
+- **Next Available Date**: 
+  - Endpoint `/bookings/{accommodation_id}/next-available-date/{date}/` returns the next available date for a given accommodation after a specified date.
+  - Returns `{"next_available_date": "YYYY-MM-DD"}`.
+
+### Data Models
 
 #### Accommodation (Base Model)
 ```json
@@ -128,6 +152,30 @@ docker compose run --rm web python manage.py migrate <app_name> <migration_numbe
     "description": "A beautiful hotel in the city center",
     "price": "150.00",
     "location": "Downtown"
+}
+```
+
+#### Hotel
+```json
+{
+    "id": 2,
+    "name": "Grand Hotel",
+    "description": "A grand hotel",
+    "price": "200.00",
+    "location": "Uptown",
+    "number_of_rooms": 100
+}
+```
+
+#### Apartment
+```json
+{
+    "id": 3,
+    "name": "City Apartment",
+    "description": "A cozy apartment",
+    "price": "120.00",
+    "location": "Midtown",
+    "floor_number": 5
 }
 ```
 
@@ -253,9 +301,18 @@ tech-challenge-python/
 │   └── asgi.py              # ASGI application
 ├── accommodations/           # Accommodations app
 │   ├── migrations/          # Database migrations
-│   ├── models.py            # Accommodation model
+│   ├── models/          # Database migrations
+│   │   ├── __init__.py
+│   │   ├── accomodation.py
+│   │   ├── hotel.py
+│   │   ├── apartment.py
+│   ├── models.py            # exporting all models
 │   ├── serializers.py       # DRF serializers with validation
-│   ├── views.py            # Accommodation views
+│   ├── views.py            # export all views
+│   │   ├── __init__.py
+│   │   ├── accomodation.py
+│   │   ├── hotel.py
+│   │   ├── apartment.py
 │   ├── urls.py             # URL routing
 │   ├── admin.py            # Admin configuration
 │   └── apps.py             # App configuration
