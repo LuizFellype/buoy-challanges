@@ -130,7 +130,7 @@ docker compose run --rm web python manage.py migrate <app_name> <migration_numbe
 - `GET /bookings/{id}/` - Get booking by ID
 - `PUT /bookings/{id}/` - Update booking
 - `DELETE /bookings/{id}/` - Delete booking
-- `GET /bookings/{accommodation_id}/next-available-date/{date}/` - Get next available date for an accommodation (date format: YYYY-MM-DD)
+- `GET /bookings/availability/?accommodation_id={id}&date={date}` - Get next available date for an accommodation (date format: YYYY-MM-DD)
 
 ### Key Features & Business Logic
 
@@ -301,9 +301,18 @@ tech-challenge-python/
 │   └── asgi.py              # ASGI application
 ├── accommodations/           # Accommodations app
 │   ├── migrations/          # Database migrations
-│   ├── models.py            # Accommodation model
+│   ├── models/          # Database migrations
+│   │   ├── __init__.py
+│   │   ├── accomodation.py
+│   │   ├── hotel.py
+│   │   ├── apartment.py
+│   ├── models.py            # exporting all models
 │   ├── serializers.py       # DRF serializers with validation
-│   ├── views.py            # Accommodation views
+│   ├── views.py            # export all views
+│   │   ├── __init__.py
+│   │   ├── accomodation.py
+│   │   ├── hotel.py
+│   │   ├── apartment.py
 │   ├── urls.py             # URL routing
 │   ├── admin.py            # Admin configuration
 │   └── apps.py             # App configuration
