@@ -1,7 +1,7 @@
 from rest_framework import generics
 from drf_spectacular.utils import extend_schema
-from .models import Hotel
-from .serializers import HotelSerializer
+from ..models import Hotel
+from ..serializers import HotelSerializer
 from src.helpers.pagination import IDCursorPagination
 
 

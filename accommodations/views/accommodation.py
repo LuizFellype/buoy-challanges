@@ -1,7 +1,7 @@
 from rest_framework import generics
 from drf_spectacular.utils import extend_schema
-from .models import Accommodation
-from .serializers import AccommodationSerializer
+from ..models import Accommodation
+from ..serializers import AccommodationSerializer
 from src.helpers.pagination import IDCursorPagination
 
 class AccommodationListCreateView(generics.ListCreateAPIView):
